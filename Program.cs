@@ -13,6 +13,8 @@ namespace csharp_rest
         {
             var coinApi = new CoinApi("EF475D08-FDC5-4845-A193-7ACC0952FCFE");
             DatabaseHelper database = new DatabaseHelper();
+            int countChances = 0;
+            List<Chance> chances = new List<Chance>();
             #region get exchange info and trading pairs
             //            Console.Write("Exchange:");
             //            Console.Write(Environment.NewLine);
@@ -66,16 +68,22 @@ namespace csharp_rest
                 string exchangeToBuy = "";
                 int firstLoopdone = 0;
 
+                decimal volumeSell = 0;
+                decimal volumeBuy = 0;
+                
+
                 foreach (var exchange in exchanges)
                 {
                     Orderbook orderbook =
                         orderbooks_current_data.FirstOrDefault(x => x.symbol_id == exchange.symbol_id);
+                    
 
                     if (orderbook != null && orderbook.bids.Length > 1 && orderbook.asks.Length > 1)
                     {
-
                         Bid[] bids = orderbook.bids;
                         Ask[] asks = orderbook.asks;
+                        volumeBuy = bids.Sum(x => x.size);
+                        volumeSell = asks.Sum(x => x.size);
                         decimal ExchangeSellPrice = bids.Max(y => y.price); // wat bieden mensen ervoor ? -> tosell
                         decimal ExchangeBuyPrice = asks.Min(y => y.price); //  waar verkopen mensen het voor? -> tobuy
 
@@ -108,160 +116,191 @@ namespace csharp_rest
 
                 if (defSellPrice > defBuyPrice)
                 {
-
+                    decimal volumeBuyPrice = volumeBuy * defBuyPrice;
+                    decimal volumeSellPrice = volumeSell * defSellPrice;
                     decimal profit = defSellPrice - defBuyPrice;
                     decimal percentage = (profit / defBuyPrice) * 100;
-                    Console.WriteLine("Chance = " + pair.asset_id_base + "/" + pair.asset_id_quote + " Buy at:" +
-                                      exchangeToBuy + " for:" + defBuyPrice + "Sell at: " + exchangeToSell +
-                                      "for:" + defSellPrice);
+                    // remove exchanges
+                    if (exchangeToBuy != "YOBIT" && exchangeToSell != "YOBIT" && exchangeToBuy != "CCEX" && exchangeToSell != "CCEX")
+                    {
+                        // remove death coins 
+                        if (volumeBuyPrice > 100 && volumeSellPrice > 100 && percentage > 2)
+                        {
+                            //TODO CALC FEES
+                            Chance chance = new Chance()
+                            {
+                                BaseCurrency = pair.asset_id_base,
+                                QuoteCurrency = pair.asset_id_quote,
+                                ExchangeToBuy = exchangeToBuy,
+                                ExchangeToSell = exchangeToSell,
+                                BuyPrice = defBuyPrice,
+                                BuyVolume = volumeBuy,
+                                SellPrice = defSellPrice,
+                                SellVolume = volumeSell,
+                                DifferencePercentage = percentage
+                            };
+                            chances.Add(chance);
+//                            Console.WriteLine("Chance = " + pair.asset_id_base + "/" + pair.asset_id_quote + " Buy at:" +
+//                                              exchangeToBuy + " for:" + defBuyPrice + "Volume: " + volumeBuy + "Sell at: " + exchangeToSell +
+//                                              "for:" + defSellPrice + "Volume: " + volumeSell + "Difference: %" + percentage);
+                            countChances++;
+                        }
+                        
+                    }
+
                 }
+            }
+
+            foreach (var chance in chances.OrderBy(x=> x.DifferencePercentage))
+            {
+                                            Console.WriteLine(chance.ToConsoleString());
             }
             #endregion
 
-//            Console.Write("Orderbooks current data all:");
-//            Console.Write(Environment.NewLine);
-//
-//            foreach (var item in orderbooks_current_data)
-//            {
-//                Console.Write("symbol_id:" + item.symbol_id);
-//                Console.Write(Environment.NewLine);
-//                Console.Write("time_exchange:" + item.time_exchange);
-//                Console.Write(Environment.NewLine);
-//                Console.Write("time_coinapi:" + item.time_coinapi);
-//                Console.Write(Environment.NewLine);
-//
-//                Console.Write("Asks:");
-//                Console.Write(Environment.NewLine);
-//                foreach (var itm in item.asks)
-//                {
-//                    Console.Write("price:" + itm.price);
-//                    Console.Write(Environment.NewLine);
-//                    Console.Write("size:" + itm.size);
-//                    Console.Write(Environment.NewLine);
-//
-//                }
-//
-//                Console.Write("Bids:");
-//                Console.Write(Environment.NewLine);
-//                foreach (var itm in item.bids)
-//                {
-//                    Console.Write("price:" + itm.price);
-//                    Console.Write(Environment.NewLine);
-//                    Console.Write("size:" + itm.size);
-//                    Console.Write(Environment.NewLine);
-//
-//                }
-//
-//                Console.Write("--------------------------------------------------------------------------------------------------------");
-//                Console.Write(Environment.NewLine);
-//            }
+            //            Console.Write("Orderbooks current data all:");
+            //            Console.Write(Environment.NewLine);
+            //
+            //            foreach (var item in orderbooks_current_data)
+            //            {
+            //                Console.Write("symbol_id:" + item.symbol_id);
+            //                Console.Write(Environment.NewLine);
+            //                Console.Write("time_exchange:" + item.time_exchange);
+            //                Console.Write(Environment.NewLine);
+            //                Console.Write("time_coinapi:" + item.time_coinapi);
+            //                Console.Write(Environment.NewLine);
+            //
+            //                Console.Write("Asks:");
+            //                Console.Write(Environment.NewLine);
+            //                foreach (var itm in item.asks)
+            //                {
+            //                    Console.Write("price:" + itm.price);
+            //                    Console.Write(Environment.NewLine);
+            //                    Console.Write("size:" + itm.size);
+            //                    Console.Write(Environment.NewLine);
+            //
+            //                }
+            //
+            //                Console.Write("Bids:");
+            //                Console.Write(Environment.NewLine);
+            //                foreach (var itm in item.bids)
+            //                {
+            //                    Console.Write("price:" + itm.price);
+            //                    Console.Write(Environment.NewLine);
+            //                    Console.Write("size:" + itm.size);
+            //                    Console.Write(Environment.NewLine);
+            //
+            //                }
+            //
+            //                Console.Write("--------------------------------------------------------------------------------------------------------");
+            //                Console.Write(Environment.NewLine);
+            //            }
 
-//            Console.Write("Orderbooks current data symbol:");
-//            Console.Write(Environment.NewLine);
-//            var orderbooks_current_data_btc_usd = coinApi.Orderbooks_current_data_symbol("BITSTAMP_SPOT_BTC_USD");
-//            Console.Write("symbol_id:" + orderbooks_current_data_btc_usd.symbol_id);
-//            Console.Write(Environment.NewLine);
-//            Console.Write("time_exchange:" + orderbooks_current_data_btc_usd.time_exchange);
-//            Console.Write(Environment.NewLine);
-//            Console.Write("time_coinapi:" + orderbooks_current_data_btc_usd.time_coinapi);
-//            Console.Write(Environment.NewLine);
-//
-//            Console.Write("Asks:");
-//            Console.Write(Environment.NewLine);
-//            foreach (var itm in orderbooks_current_data_btc_usd.asks) {
-//                Console.Write("price:" + itm.price);
-//                Console.Write(Environment.NewLine);
-//                Console.Write("size:" + itm.size);
-//                Console.Write(Environment.NewLine);
-//
-//            }
-//            Console.Write("Bids:");
-//            Console.Write(Environment.NewLine);
-//            foreach (var itm in orderbooks_current_data_btc_usd.bids) {
-//                Console.Write("price:" + itm.price);
-//                Console.Write(Environment.NewLine);
-//                Console.Write("size:" + itm.size);
-//                Console.Write(Environment.NewLine);
-//
-//            }
-//
-//            Console.Write("--------------------------------------------------------------------------------------------------------");
-//            Console.Write(Environment.NewLine);
+            //            Console.Write("Orderbooks current data symbol:");
+            //            Console.Write(Environment.NewLine);
+            //            var orderbooks_current_data_btc_usd = coinApi.Orderbooks_current_data_symbol("BITSTAMP_SPOT_BTC_USD");
+            //            Console.Write("symbol_id:" + orderbooks_current_data_btc_usd.symbol_id);
+            //            Console.Write(Environment.NewLine);
+            //            Console.Write("time_exchange:" + orderbooks_current_data_btc_usd.time_exchange);
+            //            Console.Write(Environment.NewLine);
+            //            Console.Write("time_coinapi:" + orderbooks_current_data_btc_usd.time_coinapi);
+            //            Console.Write(Environment.NewLine);
+            //
+            //            Console.Write("Asks:");
+            //            Console.Write(Environment.NewLine);
+            //            foreach (var itm in orderbooks_current_data_btc_usd.asks) {
+            //                Console.Write("price:" + itm.price);
+            //                Console.Write(Environment.NewLine);
+            //                Console.Write("size:" + itm.size);
+            //                Console.Write(Environment.NewLine);
+            //
+            //            }
+            //            Console.Write("Bids:");
+            //            Console.Write(Environment.NewLine);
+            //            foreach (var itm in orderbooks_current_data_btc_usd.bids) {
+            //                Console.Write("price:" + itm.price);
+            //                Console.Write(Environment.NewLine);
+            //                Console.Write("size:" + itm.size);
+            //                Console.Write(Environment.NewLine);
+            //
+            //            }
+            //
+            //            Console.Write("--------------------------------------------------------------------------------------------------------");
+            //            Console.Write(Environment.NewLine);
 
-//            Console.Write("Orderbooks last data:");
-//            Console.Write(Environment.NewLine);
-//            var orderbooks_latest_data_btc_usd = coinApi.Orderbooks_last_data("BITSTAMP_SPOT_BTC_USD");
-//            foreach (var item in orderbooks_latest_data_btc_usd) {
-//                Console.Write("symbol_id:" + item.symbol_id);
-//                Console.Write(Environment.NewLine);
-//                Console.Write("time_exchange:" + item.time_exchange);
-//                Console.Write(Environment.NewLine);
-//                Console.Write("time_coinapi:" + item.time_coinapi);
-//                Console.Write(Environment.NewLine);
-//
-//                Console.Write("Asks:");
-//                Console.Write(Environment.NewLine);
-//                foreach (var itm in item.asks) {
-//                    Console.Write("price:" + itm.price);
-//                    Console.Write(Environment.NewLine);
-//                    Console.Write("size:" + itm.size);
-//                    Console.Write(Environment.NewLine);
-//
-//                }
-//                Console.Write("Bids:");
-//                Console.Write(Environment.NewLine);
-//                foreach (var itm in item.bids) {
-//                    Console.Write("price:" + itm.price);
-//                    Console.Write(Environment.NewLine);
-//                    Console.Write("size:" + itm.size);
-//                    Console.Write(Environment.NewLine);
-//
-//                }
-//
-//                Console.Write("--------------------------------------------------------------------------------------------------------");
-//                Console.Write(Environment.NewLine);
-//            }
-//
-//            Console.Write("Orderbooks historical data:");
-//            Console.Write(Environment.NewLine);
-//            var orderbooks_historical_data_btc_usd = coinApi.Orderbooks_historical_data("BITSTAMP_SPOT_BTC_USD", start_of_2016);
-//            foreach (var item in orderbooks_historical_data_btc_usd) {
-//                Console.Write("symbol_id:" + item.symbol_id);
-//                Console.Write(Environment.NewLine);
-//                Console.Write("time_exchange:" + item.time_exchange);
-//                Console.Write(Environment.NewLine);
-//                Console.Write("time_coinapi:" + item.time_coinapi);
-//                Console.Write(Environment.NewLine);
-//
-//                Console.Write("Asks:");
-//                Console.Write(Environment.NewLine);
-//                foreach (var itm in item.asks) {
-//                    Console.Write("price:" + itm.price);
-//                    Console.Write(Environment.NewLine);
-//                    Console.Write("size:" + itm.size);
-//                    Console.Write(Environment.NewLine);
-//
-//                }
-//                Console.Write("Bids:");
-//                Console.Write(Environment.NewLine);
-//                foreach (var itm in item.bids) {
-//                    Console.Write("price:" + itm.price);
-//                    Console.Write(Environment.NewLine);
-//                    Console.Write("size:" + itm.size);
-//                    Console.Write(Environment.NewLine);
-//
-//                }
-//
-//                Console.Write("--------------------------------------------------------------------------------------------------------");
-//                Console.Write(Environment.NewLine);
-//            }
+            //            Console.Write("Orderbooks last data:");
+            //            Console.Write(Environment.NewLine);
+            //            var orderbooks_latest_data_btc_usd = coinApi.Orderbooks_last_data("BITSTAMP_SPOT_BTC_USD");
+            //            foreach (var item in orderbooks_latest_data_btc_usd) {
+            //                Console.Write("symbol_id:" + item.symbol_id);
+            //                Console.Write(Environment.NewLine);
+            //                Console.Write("time_exchange:" + item.time_exchange);
+            //                Console.Write(Environment.NewLine);
+            //                Console.Write("time_coinapi:" + item.time_coinapi);
+            //                Console.Write(Environment.NewLine);
+            //
+            //                Console.Write("Asks:");
+            //                Console.Write(Environment.NewLine);
+            //                foreach (var itm in item.asks) {
+            //                    Console.Write("price:" + itm.price);
+            //                    Console.Write(Environment.NewLine);
+            //                    Console.Write("size:" + itm.size);
+            //                    Console.Write(Environment.NewLine);
+            //
+            //                }
+            //                Console.Write("Bids:");
+            //                Console.Write(Environment.NewLine);
+            //                foreach (var itm in item.bids) {
+            //                    Console.Write("price:" + itm.price);
+            //                    Console.Write(Environment.NewLine);
+            //                    Console.Write("size:" + itm.size);
+            //                    Console.Write(Environment.NewLine);
+            //
+            //                }
+            //
+            //                Console.Write("--------------------------------------------------------------------------------------------------------");
+            //                Console.Write(Environment.NewLine);
+            //            }
+            //
+            //            Console.Write("Orderbooks historical data:");
+            //            Console.Write(Environment.NewLine);
+            //            var orderbooks_historical_data_btc_usd = coinApi.Orderbooks_historical_data("BITSTAMP_SPOT_BTC_USD", start_of_2016);
+            //            foreach (var item in orderbooks_historical_data_btc_usd) {
+            //                Console.Write("symbol_id:" + item.symbol_id);
+            //                Console.Write(Environment.NewLine);
+            //                Console.Write("time_exchange:" + item.time_exchange);
+            //                Console.Write(Environment.NewLine);
+            //                Console.Write("time_coinapi:" + item.time_coinapi);
+            //                Console.Write(Environment.NewLine);
+            //
+            //                Console.Write("Asks:");
+            //                Console.Write(Environment.NewLine);
+            //                foreach (var itm in item.asks) {
+            //                    Console.Write("price:" + itm.price);
+            //                    Console.Write(Environment.NewLine);
+            //                    Console.Write("size:" + itm.size);
+            //                    Console.Write(Environment.NewLine);
+            //
+            //                }
+            //                Console.Write("Bids:");
+            //                Console.Write(Environment.NewLine);
+            //                foreach (var itm in item.bids) {
+            //                    Console.Write("price:" + itm.price);
+            //                    Console.Write(Environment.NewLine);
+            //                    Console.Write("size:" + itm.size);
+            //                    Console.Write(Environment.NewLine);
+            //
+            //                }
+            //
+            //                Console.Write("--------------------------------------------------------------------------------------------------------");
+            //                Console.Write(Environment.NewLine);
+            //            }
 
-                //var twitter_historical_data = coinApi.Twitter_historical_data(start_of_2016);
+            //var twitter_historical_data = coinApi.Twitter_historical_data(start_of_2016);
 
 
 
-                Console.ReadLine();
+            Console.ReadLine();
+            }
             }
         }
-    }
-}
+

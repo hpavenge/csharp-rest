@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="backup.cs" />
+    <Compile Include="Chance.cs" />
     <Compile Include="CoinApi.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
