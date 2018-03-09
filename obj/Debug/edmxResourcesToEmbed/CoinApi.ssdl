@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CoinApiModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Pairs">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="asset_id_base" Type="varchar" MaxLength="50" />
+    <Property Name="asset_id_quote" Type="varchar" MaxLength="50" />
+    <Property Name="count" Type="int" />
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SymbolsDb">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="symbol_id" Type="varchar" MaxLength="250" />
+    <Property Name="exchange_id" Type="varchar" MaxLength="50" />
+    <Property Name="symbol_type" Type="varchar" MaxLength="50" />
+    <Property Name="asset_id_base" Type="varchar" MaxLength="50" />
+    <Property Name="asset_id_quote" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityContainer Name="CoinApiModelStoreContainer">
+    <EntitySet Name="Pairs" EntityType="Self.Pairs" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SymbolsDb" EntityType="Self.SymbolsDb" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>
