@@ -151,7 +151,7 @@ namespace csharp_rest
                 }
             }
 
-            foreach (var chance in chances.OrderBy(x=> x.DifferencePercentage))
+            foreach (var chance in chances.OrderBy(x=> x.BuyVolume))
             {
                                             Console.WriteLine(chance.ToConsoleString());
             }
