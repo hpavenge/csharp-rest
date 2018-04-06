@@ -124,9 +124,13 @@ namespace csharp_rest
                     if (exchangeToBuy != "YOBIT" && exchangeToSell != "YOBIT" && exchangeToBuy != "CCEX" && exchangeToSell != "CCEX")
                     {
                         // remove death coins 
-                        if (volumeBuyPrice > 100 && volumeSellPrice > 100 && percentage > 2)
+                        // ATLEAST 5 % because -> transfer fee 1% and price diff ltc +- 4%
+                        // OR check coins same exchange which price equals each other
+                        if (volumeBuyPrice > 100 && volumeSellPrice > 100 && percentage > 5)
                         {
                             //TODO CALC FEES
+                            //TODO check exchanges are both from top exchanges selected  = golden chances i guess
+                            //TODO create api
                             Chance chance = new Chance()
                             {
                                 BaseCurrency = pair.asset_id_base,
