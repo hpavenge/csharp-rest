@@ -22,6 +22,7 @@ namespace csharp_rest
         //        "for:" + defSellPrice + "Volume: " + volumeSell + "Difference: %" + percentage);
         public string ToConsoleString()
         {
+            DatabaseHelper databaseHelper = new DatabaseHelper();
             string chance = "Chance = " + BaseCurrency + "/" + QuoteCurrency + " Buy at:" +
                             ExchangeToBuy + " for:" + BuyPrice + "Volume: " + BuyPrice + "Sell at: " + ExchangeToSell +
                             "for:" + SellPrice + "Volume: " + SellVolume + "Difference: %" + DifferencePercentage;

@@ -52,22 +52,22 @@ namespace csharp_rest
                 x.asset_id_base == pair.asset_id_base && x.asset_id_quote == pair.asset_id_quote && GoldenExchanges.Contains(x.exchange_id));
         }
 
-        private List<string> getXrpExchanges()
+        public List<string> getXrpExchanges()
         {
             return coinApiEntities.SymbolsDbs.Where(x => x.asset_id_base == "XRP").Select(x => x.exchange_id).Distinct().ToList();
         }
 
-        private List<string> getNeoExchanges()
+        public List<string> getNeoExchanges()
         {
             return coinApiEntities.SymbolsDbs.Where(x => x.asset_id_base == "NEO").Select(x => x.exchange_id).Distinct().ToList();
         }
 
-        private List<string> getXlmExchanges()
+        public List<string> getXlmExchanges()
         {
             return coinApiEntities.SymbolsDbs.Where(x => x.asset_id_base == "XLM").Select(x => x.exchange_id).Distinct().ToList();
         }
 
-        private List<string> getLtcExchanges()
+        public List<string> getLtcExchanges()
         {
             return coinApiEntities.SymbolsDbs.Where(x => x.asset_id_base == "LTC").Select(x => x.exchange_id).Distinct().ToList();
         }
