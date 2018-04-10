@@ -4,22 +4,22 @@
     <EntitySetMapping Name="Pairs">
       <EntityTypeMapping TypeName="CoinApiModel.Pair">
         <MappingFragment StoreEntitySet="Pairs">
-          <ScalarProperty Name="asset_id_base" ColumnName="asset_id_base" />
-          <ScalarProperty Name="asset_id_quote" ColumnName="asset_id_quote" />
-          <ScalarProperty Name="count" ColumnName="count" />
           <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="count" ColumnName="count" />
+          <ScalarProperty Name="asset_id_quote" ColumnName="asset_id_quote" />
+          <ScalarProperty Name="asset_id_base" ColumnName="asset_id_base" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="SymbolsDbs">
       <EntityTypeMapping TypeName="CoinApiModel.SymbolsDb">
-        <MappingFragment StoreEntitySet="SymbolsDbs">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="symbol_id" ColumnName="symbol_id" />
-          <ScalarProperty Name="exchange_id" ColumnName="exchange_id" />
-          <ScalarProperty Name="symbol_type" ColumnName="symbol_type" />
-          <ScalarProperty Name="asset_id_base" ColumnName="asset_id_base" />
+        <MappingFragment StoreEntitySet="SymbolsDb">
           <ScalarProperty Name="asset_id_quote" ColumnName="asset_id_quote" />
+          <ScalarProperty Name="asset_id_base" ColumnName="asset_id_base" />
+          <ScalarProperty Name="symbol_type" ColumnName="symbol_type" />
+          <ScalarProperty Name="exchange_id" ColumnName="exchange_id" />
+          <ScalarProperty Name="symbol_id" ColumnName="symbol_id" />
+          <ScalarProperty Name="id" ColumnName="id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

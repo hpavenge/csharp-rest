@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="CoinApiModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="CoinApiModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Pairs">
           <Key>
             <PropertyRef Name="id" />
@@ -14,7 +14,7 @@
           <Property Name="count" Type="int" />
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
-        <EntityType Name="SymbolsDbs">
+        <EntityType Name="SymbolsDb">
           <Key>
             <PropertyRef Name="id" />
           </Key>
@@ -27,13 +27,16 @@
         </EntityType>
         <EntityContainer Name="CoinApiModelStoreContainer">
           <EntitySet Name="Pairs" EntityType="Self.Pairs" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="SymbolsDbs" EntityType="Self.SymbolsDbs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SymbolsDb" EntityType="Self.SymbolsDb" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="CoinApiModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="CoinApiEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Pairs" EntityType="CoinApiModel.Pair" />
+          <EntitySet Name="SymbolsDbs" EntityType="CoinApiModel.SymbolsDb" />
+        </EntityContainer>
         <EntityType Name="Pair">
           <Key>
             <PropertyRef Name="id" />
@@ -54,10 +57,6 @@
           <Property Name="asset_id_base" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="asset_id_quote" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityContainer Name="CoinApiEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Pairs" EntityType="Self.Pair" />
-          <EntitySet Name="SymbolsDbs" EntityType="Self.SymbolsDb" />
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -67,22 +66,22 @@
           <EntitySetMapping Name="Pairs">
             <EntityTypeMapping TypeName="CoinApiModel.Pair">
               <MappingFragment StoreEntitySet="Pairs">
-                <ScalarProperty Name="asset_id_base" ColumnName="asset_id_base" />
-                <ScalarProperty Name="asset_id_quote" ColumnName="asset_id_quote" />
-                <ScalarProperty Name="count" ColumnName="count" />
                 <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="count" ColumnName="count" />
+                <ScalarProperty Name="asset_id_quote" ColumnName="asset_id_quote" />
+                <ScalarProperty Name="asset_id_base" ColumnName="asset_id_base" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="SymbolsDbs">
             <EntityTypeMapping TypeName="CoinApiModel.SymbolsDb">
-              <MappingFragment StoreEntitySet="SymbolsDbs">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="symbol_id" ColumnName="symbol_id" />
-                <ScalarProperty Name="exchange_id" ColumnName="exchange_id" />
-                <ScalarProperty Name="symbol_type" ColumnName="symbol_type" />
-                <ScalarProperty Name="asset_id_base" ColumnName="asset_id_base" />
+              <MappingFragment StoreEntitySet="SymbolsDb">
                 <ScalarProperty Name="asset_id_quote" ColumnName="asset_id_quote" />
+                <ScalarProperty Name="asset_id_base" ColumnName="asset_id_base" />
+                <ScalarProperty Name="symbol_type" ColumnName="symbol_type" />
+                <ScalarProperty Name="exchange_id" ColumnName="exchange_id" />
+                <ScalarProperty Name="symbol_id" ColumnName="symbol_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

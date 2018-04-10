@@ -36,6 +36,7 @@ namespace csharp_rest
 
         public IQueryable<SymbolsDb> GetExchanges(Pair pair)
         {
+
             //coinApiEntities.SymbolsDbs.Where(x => x.asset_id_base == "ltc" || x.asset_id_base == "neo");
             return coinApiEntities.SymbolsDbs.Where(x =>
                 x.asset_id_base == pair.asset_id_base && x.asset_id_quote == pair.asset_id_quote);
