@@ -1,5 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="CoinApiModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Pair">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="asset_id_base" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="asset_id_quote" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="count" Type="Int32" />
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+  </EntityType>
   <EntityType Name="SymbolsDb">
     <Key>
       <PropertyRef Name="id" />
@@ -12,16 +21,7 @@
     <Property Name="asset_id_quote" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityContainer Name="CoinApiEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Pairs" EntityType="Self.Pair" />
     <EntitySet Name="SymbolsDbs" EntityType="Self.SymbolsDb" />
-    <EntitySet Name="Pairs" EntityType="CoinApiModel.Pair" />
   </EntityContainer>
-  <EntityType Name="Pair">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="asset_id_base" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="asset_id_quote" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="count" Type="Int32" />
-    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-  </EntityType>
 </Schema>

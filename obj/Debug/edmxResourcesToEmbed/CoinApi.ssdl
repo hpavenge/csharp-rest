@@ -9,7 +9,7 @@
     <Property Name="count" Type="int" />
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
   </EntityType>
-  <EntityType Name="SymbolsDb">
+  <EntityType Name="SymbolsDbs">
     <Key>
       <PropertyRef Name="id" />
     </Key>
@@ -22,6 +22,6 @@
   </EntityType>
   <EntityContainer Name="CoinApiModelStoreContainer">
     <EntitySet Name="Pairs" EntityType="Self.Pairs" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="SymbolsDb" EntityType="Self.SymbolsDb" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SymbolsDbs" EntityType="Self.SymbolsDbs" Schema="dbo" store:Type="Tables" />
   </EntityContainer>
 </Schema>

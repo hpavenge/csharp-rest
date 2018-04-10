@@ -25,7 +25,7 @@ namespace csharp_rest
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<SymbolsDb> SymbolsDbs { get; set; }
         public virtual DbSet<Pair> Pairs { get; set; }
+        public virtual DbSet<SymbolsDb> SymbolsDbs { get; set; }
     }
 }

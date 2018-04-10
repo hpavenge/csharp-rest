@@ -17,6 +17,8 @@ namespace csharp_rest
         public decimal SellPrice { get; set; }
         public decimal SellVolume { get; set; }
         public decimal DifferencePercentage { get; set; }
+
+        public bool GoldenTrade { get; set; }
         //        Console.WriteLine("Chance = " + pair.asset_id_base + "/" + pair.asset_id_quote + " Buy at:" +
         //        exchangeToBuy + " for:" + defBuyPrice + "Volume: " + volumeBuy + "Sell at: " + exchangeToSell +
         //        "for:" + defSellPrice + "Volume: " + volumeSell + "Difference: %" + percentage);
