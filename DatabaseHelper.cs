@@ -37,9 +37,40 @@ namespace csharp_rest
         public IQueryable<SymbolsDb> GetExchanges(Pair pair)
         {
 
-            //coinApiEntities.SymbolsDbs.Where(x => x.asset_id_base == "ltc" || x.asset_id_base == "neo");
+            List<string> ltcExchanges = getLtcExchanges();
+            List<string> xlmExchanges = getXlmExchanges();
+            List<string> neoExchanges = getNeoExchanges();
+            List<string> xrpExchanges = getXrpExchanges();
+            List<string> AlCombined = new List<string>();
+            AlCombined.AddRange(ltcExchanges);
+            AlCombined.AddRange(xlmExchanges);
+            AlCombined.AddRange(neoExchanges);
+            AlCombined.AddRange(xrpExchanges);
+            AlCombined.RemoveAll(x => x == "BITFINEX");
+            List<string> GoldenExchanges = AlCombined.GroupBy(x => x).Where(group => group.Count() > 1).Select(group => group.Key).ToList();
+
             return coinApiEntities.SymbolsDbs.Where(x =>
-                x.asset_id_base == pair.asset_id_base && x.asset_id_quote == pair.asset_id_quote);
+                x.asset_id_base == pair.asset_id_base && x.asset_id_quote == pair.asset_id_quote && GoldenExchanges.Contains(x.exchange_id));
+        }
+
+        public List<string> getXrpExchanges()
+        {
+            return coinApiEntities.SymbolsDbs.Where(x => x.asset_id_base == "XRP").Select(x => x.exchange_id).Distinct().ToList();
+        }
+
+        public List<string> getNeoExchanges()
+        {
+            return coinApiEntities.SymbolsDbs.Where(x => x.asset_id_base == "NEO").Select(x => x.exchange_id).Distinct().ToList();
+        }
+
+        public List<string> getXlmExchanges()
+        {
+            return coinApiEntities.SymbolsDbs.Where(x => x.asset_id_base == "XLM").Select(x => x.exchange_id).Distinct().ToList();
+        }
+
+        public List<string> getLtcExchanges()
+        {
+            return coinApiEntities.SymbolsDbs.Where(x => x.asset_id_base == "LTC").Select(x => x.exchange_id).Distinct().ToList();
         }
     }
 }
